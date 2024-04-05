@@ -12,7 +12,10 @@ from database import (
     remove_todo,
 )
 
-origins = ['https://localhost:3000']
+
+origins = [
+    "*"
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,7 +29,7 @@ app.add_middleware(
 def read_root():
     return {"Ping":"Pong"}
 
-@app.get("/api/todo")
+@app.get("/api/todo/")
 async def get_todo():
     response = await fetch_all_todos()
     return response
@@ -38,20 +41,21 @@ async def get_todo_by_id(title):
         return response
     raise HTTPException(404, f"There is no item with {title}")
 
-@app.post("/api/todo", response_model=Todo)
+@app.post("/api/todo/", response_model=Todo)
 async def post_todo(todo:Todo):
     response = await create_todo(todo.dict())
     if response:
         return response
     raise HTTPException(400, "Something went wrong/Bad Request")
 
-@app.put("/api/todo{title}", response_model=Todo)
+@app.put("/api/todo/{title}", response_model=Todo)
 async def put_todo(title:str, desc:str):
     response = await update_todo(title,desc)
     if response:
         return response
     raise HTTPException(404, f"There is no todo with {title}")
-@app.delete("/api/todo{title}")
+
+@app.delete("/api/todo/{title}")
 async def delete_todo(title):
     response = await remove_todo(title)
     if response:
