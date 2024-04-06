@@ -12,7 +12,6 @@ from database import (
     remove_todo,
 )
 
-
 origins = [
     "*"
 ]
